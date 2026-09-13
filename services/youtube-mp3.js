@@ -211,10 +211,11 @@ async function youtubeMp3(req, res) {
       'audio/mpeg'
     );
 
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${filename}.mp3"; filename*=UTF-8''${encodeURIComponent(filename)}.mp3`
-    );
+    const asciiFilename = filename.replace(/[^\x00-\x7F]/g, '').trim() || 'audio';
+res.setHeader(
+  'Content-Disposition',
+  `attachment; filename="${asciiFilename}.mp3"; filename*=UTF-8''${encodeURIComponent(filename)}.mp3`
+);
 
     res.setHeader(
       'Cache-Control',
