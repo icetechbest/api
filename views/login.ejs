@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: 'Login' }) %></head>
+<body class="light">
+  <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div class="card" style="max-width:360px; width:100%;">
+      <div class="page-title" style="margin-bottom:4px;"><%- include('partials/icon', { name: 'box' }) %> <%= siteName %></div>
+      <div class="page-sub" style="margin-bottom:18px;">Enter the site password to continue.</div>
+
+      <% if (error) { %>
+        <div class="response-box show err" style="margin-bottom:14px;"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <input type="hidden" name="next" value="<%= next %>">
+        <div class="field-row" style="margin-bottom:14px;">
+          <label class="field-label">Password</label>
+          <input type="password" name="password" class="field-input" autofocus required>
+        </div>
+        <button type="submit" class="btn" style="width:100%; justify-content:center;">Enter</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

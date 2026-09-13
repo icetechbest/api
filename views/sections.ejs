@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: 'Sections' }) %></head>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title"><%- include('partials/icon', { name: 'grid' }) %> All sections</div>
+          <div class="page-sub">Browse every endpoint group.</div>
+        </div>
+        <button class="menu-btn" id="menuBtn"><%- include('partials/icon', { name: 'menu' }) %></button>
+      </div>
+
+      <div class="search-wrap">
+        <%- include('partials/icon', { name: 'search' }) %>
+        <input type="text" id="sectionSearch" placeholder="Search sections...">
+      </div>
+
+      <div id="sectionList">
+        <% sections.forEach(function(s) { %>
+          <a href="/sections/<%= s.id %>" class="section-card" data-name="<%= s.name.toLowerCase() %>">
+            <div class="badge-icon"><%- include('partials/icon', { name: s.icon || 'box' }) %></div>
+            <div>
+              <div class="name"><%= s.name %></div>
+              <div class="desc"><%= s.description %></div>
+            </div>
+            <div class="count"><%= s.endpoints.length %> endpoints</div>
+          </a>
+        <% }); %>
+      </div>
+    </main>
+  </div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

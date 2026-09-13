@@ -1,0 +1,29 @@
+<aside class="sidebar" id="sidebar">
+  <a href="/console" class="brand" title="API console & JSON info">
+    <div class="brand-mark">/&gt;</div>
+    <div>
+      <div class="brand-name"><%= siteName %></div>
+      <div class="brand-sub">v1.0 · tap for console</div>
+    </div>
+  </a>
+
+  <a href="/" class="nav-item <%= active === 'dashboard' ? 'active' : '' %>">
+    <span class="nav-item-left"><%- include('icon', { name: 'home' }) %> Dashboard</span>
+  </a>
+
+  <div class="nav-label">Sections</div>
+  <% sections.forEach(function(s) { %>
+    <a href="/sections/<%= s.id %>" class="nav-item <%= (typeof section !== 'undefined' && section && section.id === s.id) ? 'active' : '' %>">
+      <span class="nav-item-left"><%- include('icon', { name: s.icon || 'box' }) %> <%= s.name %></span>
+      <span class="count"><%= s.endpoints.length %></span>
+    </a>
+  <% }); %>
+
+  <div class="nav-label">More</div>
+  <a href="/sections" class="nav-item <%= active === 'sections' && typeof section === 'undefined' ? 'active' : '' %>">
+    <span class="nav-item-left"><%- include('icon', { name: 'grid' }) %> All sections</span>
+  </a>
+  <a href="/console" class="nav-item <%= active === 'console' ? 'active' : '' %>">
+    <span class="nav-item-left"><%- include('icon', { name: 'box' }) %> API Console</span>
+  </a>
+</aside>

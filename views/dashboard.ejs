@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: 'Dashboard' }) %></head>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title"><%- include('partials/icon', { name: 'chart' }) %> API Statistics</div>
+          <div class="page-sub">Live overview of every endpoint on <%= siteName %>.</div>
+        </div>
+        <button class="menu-btn" id="menuBtn"><%- include('partials/icon', { name: 'menu' }) %></button>
+      </div>
+
+      <div class="grid-stats">
+        <div class="card">
+          <div class="stat-label"><%- include('partials/icon', { name: 'box' }) %> Total endpoints</div>
+          <div class="stat-value"><%= stats.totalEndpoints %></div>
+        </div>
+        <div class="card">
+          <div class="stat-label"><%- include('partials/icon', { name: 'grid' }) %> Total sections</div>
+          <div class="stat-value"><%= stats.totalSections %></div>
+        </div>
+      </div>
+
+      <% if (stats.dominant) { %>
+      <div class="card-dominant">
+        <div class="badge-icon"><%- include('partials/icon', { name: 'trophy' }) %></div>
+        <div>
+          <div class="eyebrow">Dominant section</div>
+          <div class="name"><%= stats.dominant.name %></div>
+          <div class="meta"><%= stats.dominant.count %> endpoints (<%= stats.dominant.pct %>%)</div>
+        </div>
+      </div>
+      <% } %>
+
+      <div class="section-heading"><%- include('partials/icon', { name: 'chart' }) %> Sections distribution</div>
+
+      <% stats.distribution.forEach(function(d) { %>
+        <div class="dist-row">
+          <a href="/sections/<%= d.id %>">
+            <div class="dist-top">
+              <span class="dist-name"><%= d.name %></span>
+              <span class="dist-count"><%= d.count %> endpoints</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:<%= d.pct %>%"></div></div>
+            <div class="dist-pct"><%= d.pct %>%</div>
+          </a>
+        </div>
+      <% }); %>
+    </main>
+  </div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

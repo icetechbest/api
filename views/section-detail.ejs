@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: section.name }) %></head>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="breadcrumb">
+        <a href="/"><%- include('partials/icon', { name: 'arrow-left' }) %></a>
+        <span>Dashboard</span> <span>/</span> <span><%= section.name %></span>
+      </div>
+
+      <div class="topbar">
+        <div>
+          <div class="page-title"><%- include('partials/icon', { name: section.icon || 'box' }) %> <%= section.name %></div>
+          <div class="page-sub"><%= section.description %></div>
+        </div>
+        <button class="menu-btn" id="menuBtn"><%- include('partials/icon', { name: 'menu' }) %></button>
+      </div>
+
+      <% section.endpoints.forEach(function(ep, i) { %>
+        <div class="endpoint-row" id="ep-<%= i %>">
+          <div class="endpoint-head" onclick="toggleEndpoint(<%= i %>)">
+            <span class="method-badge <%= ep.method.toLowerCase() %>"><%= ep.method %></span>
+            <span class="endpoint-path"><%= ep.path %></span>
+            <span class="status-dot" title="active"></span>
+            <span class="endpoint-title"><%= ep.title %></span>
+            <span class="chevron"><%- include('partials/icon', { name: 'chevron-right' }) %></span>
+          </div>
+
+          <div class="endpoint-body">
+            <div class="endpoint-desc"><%= ep.description %></div>
+
+            <% (ep.query || []).forEach(function(q) { %>
+              <div class="field-row">
+                <label class="field-label"><%= q.name %><%= q.required ? ' (required)' : '' %></label>
+                <input type="text" class="field-input" id="ep-<%= i %>-<%= q.name %>" placeholder="<%= q.example %>" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+              </div>
+            <% }); %>
+
+            <% const isFile = ep.responseType === 'file'; %>
+            <% const paramName = (ep.query && ep.query[0] && ep.query[0].name) || 'url'; %>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <% if (isFile) { %>
+                <button class="btn" onclick="downloadFile(<%= i %>, '<%= ep.path %>', '<%= paramName %>')">
+                  <%- include('partials/icon', { name: 'download' }) %> Download file
+                </button>
+              <% } else { %>
+                <button class="btn" onclick="sendRequest(<%= i %>, '<%= ep.path %>', '<%= paramName %>')">
+                  <%- include('partials/icon', { name: 'download' }) %> Send request
+                </button>
+              <% } %>
+              <button class="btn btn-ghost" onclick="copyPath('<%= ep.path %>', '<%= paramName %>', this)">
+                <%- include('partials/icon', { name: 'copy' }) %> Copy path
+              </button>
+            </div>
+
+            <div class="response-box" id="ep-<%= i %>-response"></div>
+          </div>
+        </div>
+      <% }); %>
+    </main>
+  </div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

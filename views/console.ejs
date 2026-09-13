@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: 'API Console' }) %></head>
+<body class="light">
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title"><%- include('partials/icon', { name: 'box' }) %> API Console</div>
+          <div class="page-sub">Raw platform info as JSON, and a live tester for any endpoint.</div>
+        </div>
+        <button class="menu-btn" id="menuBtn"><%- include('partials/icon', { name: 'menu' }) %></button>
+      </div>
+
+      <div class="section-heading"><%- include('partials/icon', { name: 'chart' }) %> Platform info · <code style="font-family:var(--font-mono); font-size:12px;">GET /api/info</code></div>
+      <pre class="json-panel" id="jsonPanel"><%= JSON.stringify(siteInfo, null, 2) %></pre>
+
+      <div class="section-heading"><%- include('partials/icon', { name: 'download' }) %> Try any endpoint</div>
+      <div class="card">
+        <div class="tester-grid">
+          <div class="field-row" style="margin-bottom:0;">
+            <label class="field-label">Endpoint</label>
+            <select class="field-input" id="testerEndpoint"></select>
+          </div>
+          <div class="field-row" style="margin-bottom:0;" id="testerParamWrap">
+            <label class="field-label" id="testerParamLabel">url</label>
+            <input type="text" class="field-input" id="testerParamInput" placeholder="Paste a link to test" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px;">
+          <button class="btn" id="testerSendBtn"><%- include('partials/icon', { name: 'download' }) %> Send request</button>
+        </div>
+
+        <div class="response-box" id="testerResponse"></div>
+      </div>
+
+      <div class="section-heading"><%- include('partials/icon', { name: 'box' }) %> Telegram account</div>
+      <div class="card" id="tgAccountCard">
+        <div id="tgStatusLine" class="page-sub" style="margin-bottom:14px;">Checking status…</div>
+
+        <div id="tgStepPhone">
+          <div class="field-row">
+            <label class="field-label">Phone number (with country code)</label>
+            <input type="text" class="field-input" id="tgPhone" placeholder="+201234567890" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          </div>
+          <button class="btn" id="tgSendCodeBtn"><%- include('partials/icon', { name: 'download' }) %> Send code</button>
+        </div>
+
+        <div id="tgStepCode" style="display:none; margin-top:14px;">
+          <div class="field-row">
+            <label class="field-label">Code from Telegram</label>
+            <input type="text" class="field-input" id="tgCode" placeholder="12345">
+          </div>
+          <button class="btn" id="tgVerifyCodeBtn"><%- include('partials/icon', { name: 'download' }) %> Verify code</button>
+        </div>
+
+        <div id="tgStepPassword" style="display:none; margin-top:14px;">
+          <div class="field-row">
+            <label class="field-label">2-step verification password</label>
+            <input type="password" class="field-input" id="tgPassword">
+          </div>
+          <button class="btn" id="tgVerifyPasswordBtn"><%- include('partials/icon', { name: 'download' }) %> Verify password</button>
+        </div>
+
+        <div class="response-box" id="tgAuthResponse"></div>
+      </div>
+
+      <div class="section-heading"><%- include('partials/icon', { name: 'grid' }) %> Generated bot APIs</div>
+      <div class="card">
+        <div class="page-sub" style="margin-bottom:14px;">Every bot you add here also shows up as its own endpoint under a public "Bots" section in the sidebar/dashboard — same as Media and Audio.</div>
+        <div id="tgBotList">
+          <% if (!bots.length) { %>
+            <div class="page-sub">No bots yet — add one below.</div>
+          <% } %>
+          <% bots.forEach(function(b) { %>
+            <div class="field-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+              <div>
+                <strong><%= b.name %></strong> → @<%= b.botUsername %><br>
+                <code style="font-family:var(--font-mono); font-size:12px;">GET /api/bot/<%= b.id %>?input=...</code>
+              </div>
+              <button class="btn btn-ghost tgDeleteBotBtn" data-id="<%= b.id %>">Delete</button>
+            </div>
+          <% }); %>
+        </div>
+
+        <div class="section-heading" style="margin-top:18px;">Add a bot</div>
+        <div class="tester-grid">
+          <div class="field-row" style="margin-bottom:0;">
+            <label class="field-label">Display name</label>
+            <input type="text" class="field-input" id="tgBotName" placeholder="Azkar">
+          </div>
+          <div class="field-row" style="margin-bottom:0;">
+            <label class="field-label">Bot username</label>
+            <input type="text" class="field-input" id="tgBotUsername" placeholder="SomeAzkarBot">
+          </div>
+        </div>
+        <div class="field-row" style="margin-top:14px;">
+          <label class="field-label">Input type</label>
+          <select class="field-input" id="tgBotInputType">
+            <option value="text">Any text</option>
+            <option value="name">Name</option>
+            <option value="number">Number</option>
+            <option value="link">Link</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label class="field-label">Description (optional)</label>
+          <input type="text" class="field-input" id="tgBotDescription" placeholder="What this bot does">
+        </div>
+        <button class="btn" id="tgAddBotBtn"><%- include('partials/icon', { name: 'download' }) %> Add bot</button>
+        <div class="response-box" id="tgBotResponse"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    window.__ENDPOINTS__ = <%- JSON.stringify(sections.flatMap(function(s) {
+      return s.endpoints.map(function(e) {
+        return { section: s.name, title: e.title, method: e.method, path: e.path, param: (e.query && e.query[0] && e.query[0].name) || 'url', example: (e.query && e.query[0] && e.query[0].example) || '' };
+      });
+    })) %>;
+  </script>
+  <script src="/js/app.js"></script>
+  <script src="/js/telegram.js"></script>
+</body>
+</html>

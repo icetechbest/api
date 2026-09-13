@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { title: 'Not found' }) %></head>
+<body>
+  <div class="shell">
+    <main class="main" style="grid-column: 1 / -1;">
+      <div class="empty-state">
+        <%- include('partials/icon', { name: 'search' }) %>
+        <div style="font-family: var(--font-display); font-size: 20px; margin-bottom: 6px;">404 — Not found</div>
+        <div>That page or endpoint doesn't exist.</div>
+        <br>
+        <a href="/" class="btn" style="display:inline-flex;">Back to dashboard</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

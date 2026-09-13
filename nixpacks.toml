@@ -1,0 +1,6 @@
+[phases.setup]
+# لازم Node عشان المشروع، وffmpeg لازم يبقى موجود كبرنامج على السيرفر عشان
+# تحويل الصوت في /api/audio/youtube-mp3 (بيستخدمه مباشرة كـ command، مش
+# مكتبة جافاسكريبت). yt-dlp نفسه بيتحمل تلقائي وحده في ./bin/yt-dlp
+# (scripts/install-ytdlp.js) فمش محتاج نضيفه هنا.
+nixPkgs = ["nodejs_20", "ffmpeg"]
